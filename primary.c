@@ -1,14 +1,14 @@
 #include<stdio.h>
 #include<math.h>
 #include<stdbool.h>
+#include<string.h>
 
-int convert(int number){
-	int dec = 0, i = 0, remainder;
-	while (number != 0){
-		remainder = number % 10;
-		number = number / 10;
-		dec += remainder*pow(2,i);
-		i++;
+int convert(char *number){
+	int dec = 0, i = 0, base = 1, len = strlen(number);
+	for (i = len -1; i >= 0; i --){
+		if (number[i] == '1')
+			dec += base;
+		base = base * 2;
 	}
 	return dec;
 }
@@ -23,13 +23,13 @@ bool isPrime(int number){
 }
 
 int main(int argc, char *argv[]){
-	int num = *argv[1];
-	num = convert(num);
-	if (isPrime(num)){
+	char *num = argv[1];
+	dec_num = convert(num);
+	if (isPrime(dec_num)){
 	printf("This is prime number");
 	}
 	else{
-		printf("This is prime number");
+		printf("This isn't prime number");
 	}
 	return 0;
 }
