@@ -6,60 +6,40 @@
 #include<sys/types.h>
 #include<unistd.h>
 
-
-bool isPrime(int number){
-	for (int i = 2; i <= sqrt(number); i++)
-	{
-		if (number % i == 0)
-			return false;
-	}
-	return true;
-}
-
 int main(int argc, char *argv[]){
-	        int fd[2];
+        int pipe_fd[2];
         pid_t p;
 
-        if (pipe(fd) == -1){
-                fprintf(stderr, "Pipe failed");
+        if (pipe(pipe_fd) == -1){
+                fprintf(stderr, "Pipe Failed");
                 return 1;
         }
 
         p = fork();
-
         if (p < 0){
-                fprintf(stderr, "fork failed");
-                return 1;
+                        fprintf(stderr, "Fork Failed");
+                        return 1;
         }
-
-        if (p == 0){
-                close(fd[0]);
-
-                if(argc == 1){
-                    printf("You don't type any number, Please type numberes throw argv");
-                    return 0;
+        else if(p == 0){
+                close(pipe_fd[0]);
+                if (argc == 1){
+                        printf("You don't type any number, Please type numberes through argv");
+                        close(pipe_fd[1]);
+                        return 0;
                 }
-                int num;
-                int i = 0;
-                for(i = 1; i < argc; i++){
-                       write(fd[1], argv[i], strlen(argv[i]));
-                }
-                close(fd[1]);
+                dup2(1, pipe_fd[1]);
+                execve("./is_real_prime", argv, NULL);
         }
-
         else{
-                int i = 0, num;
+                close(pipe_fd[1]);
+                int i = 0;
                 char number[100];
-
-                close(fd[1]);
-                read(fd[0], number, 100);
-                
-		num = atoi(number);
-                if(isPrime(num)){
-			printf("%d", num);
-		}
-               
-	       	close(fd[0]);
+                for(i = 1; i < argc; i++){
+                        read(pipe_fd[0], number, 100);
+                        printf("%s ",number);
+                }
+                close(pipe_fd[0]);
                 exit(0);
         }
 }
+
