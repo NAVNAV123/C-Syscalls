@@ -28,7 +28,8 @@ int main(int argc, char *argv[]){
                         return 0;
                 }
                 dup2(1, pipe_fd[1]);
-                execve("./is_real_prime", argv, NULL);
+                close(pipe_fd[1]);
+		execve("./is_real_prime", argv, NULL);
         }
         else{
                 close(pipe_fd[1]);
