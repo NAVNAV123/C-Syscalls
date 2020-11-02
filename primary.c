@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
                         close(pipe_fd[1]);
                         return 0;
                 }
-                dup2(1, pipe_fd[1]);
+                dup2(pipe_fd[1], 1);
                 close(pipe_fd[1]);
 		execve("./is_real_prime", argv, NULL);
         }
@@ -35,12 +35,9 @@ int main(int argc, char *argv[]){
                 close(pipe_fd[1]);
                 int i = 0;
                 char number[100];
-                for(i = 1; i < argc; i++){
-                        read(pipe_fd[0], number, 100);
+		while(read(pipe_fd[0], number, 100) != 0)
                         printf("%s ",number);
-                }
-                close(pipe_fd[0]);
+		close(pipe_fd[0]);
                 exit(0);
         }
 }
-
