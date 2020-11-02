@@ -33,11 +33,16 @@ int main(int argc, char *argv[]){
         }
         else{
                 close(pipe_fd[1]);
-                int i = 0;
-                char number[100];
-		while(read(pipe_fd[0], number, 100) != 0)
-                        printf("%s ",number);
+                FILE *f = fdopen(pipe_fd[0], "r");
+		int c = getc(f);
+		while (c != EOF){
+			putchar(c);
+			c = getc(f);
+			if (c == EOF)
+				break;
+			printf(", ");
+		}
 		close(pipe_fd[0]);
-                exit(0);
+		exit(0);
         }
 }
