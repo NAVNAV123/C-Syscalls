@@ -11,6 +11,7 @@ int main(int argc, char *argv[]){
         int pipe_fd[2];
         pid_t p;
 	int status = EXIT_SUCCESS;
+	FILE *f;
 
         if (pipe(pipe_fd) == -1){
                 fprintf(stderr, "Pipe Failed");
@@ -29,11 +30,11 @@ int main(int argc, char *argv[]){
 				CLEAN(EXIT_FAILURE);
 			}
 			dup2(pipe_fd[1], 1);
-			close(pipe_fd[1]);
+			CLEAN(EXIT_SUCCESS);
 			execve("./is_real_prime", argv, NULL);
 			break;
 		default:
-			FILE *f = fdopen(pipe_fd[0], "r");
+			f = fdopen(pipe_fd[0], "r");
 			int c = getc(f);
 			while (c != EOF){
 				putchar(c);
@@ -45,8 +46,8 @@ int main(int argc, char *argv[]){
 			CLEAN(EXIT_FAILURE);
 			exit(0);
 		}
-	cleanup:
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		return status;
+cleanup:  ;
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+	return status;
 }
