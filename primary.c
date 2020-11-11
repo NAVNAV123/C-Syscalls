@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <errno.h>
+#include <fcntl.h>
 #include "defs.h"
 
 int main(int argc, char *argv[]){
@@ -47,10 +49,9 @@ int main(int argc, char *argv[]){
 		exit(0);
 	}
 cleanup:
-	if(pipe(pipe_fd) == 0)
-	{
+	if(fcntl(pipe_fd[0], F_GETFD) != -1 || errno != EBADF)
 		close(pipe_fd[0]);
+	if (fcntl(pipe_fd[1], F_GETFD) != -1 || errno != EBADF)
 		close(pipe_fd[1]);
-	}
 	return status;
 }
