@@ -49,6 +49,8 @@ int main(int argc, char *argv[]){
 		exit(0);
 	}
 cleanup:
+	if(pipe_fd == NULL)
+		return status;
 	if(fcntl(pipe_fd[0], F_GETFD) != -1 || errno != EBADF)
 		close(pipe_fd[0]);
 	if (fcntl(pipe_fd[1], F_GETFD) != -1 || errno != EBADF)
