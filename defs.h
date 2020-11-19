@@ -8,7 +8,7 @@
 } while(0);
 
 #define CHECK_NOT_NULL(v) do { \
-	if(NULL === (v)) { \
+	if(NULL == (v)) { \
 		CLEAN(EXIT_FAILURE); \
 	} \
 } while(0);
